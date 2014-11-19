@@ -1,0 +1,5 @@
+include_directories(mtl)
+file(GLOB srcs core/*.C)
+add_executable(subst-minisat ${srcs})
+target_link_libraries(subst-minisat xorsat z)
+install(TARGETS subst-minisat ${INSTALL_OPTS})

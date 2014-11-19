@@ -1,0 +1,19 @@
+LIBXORSAT_OBJS=libxorsat/src/Clause.o libxorsat/src/Gauss.o libxorsat/src/SolverImplementation.o libxorsat/src/Variable.o libxorsat/src/Common.o libxorsat/src/ImplicationGraph.o  libxorsat/src/Split.o libxorsat/src/Error.o  libxorsat/src/SolverConsistency.o  libxorsat/src/UndoStack.o
+
+BINXOR_OBJS=bin-xor-module/bcg.o bin-xor-module/fud.o bin-xor-module/xormodule.o bin-xor-module/Simplex.o bin-xor-module/erg.o
+MINISAT_OBJS=minisat/core/Solver.o minisat/core/Main.o minisat/core/SolverConsistency.o
+
+CXXFLAGS += -ggdb -g -O3 -DNDEBUG -Ilibxorsat/include -Iminisat/mtl -Ilibxorsat/src -Ibin-xor-module
+
+all: eq-minisat
+
+eq-minisat: libxorsat.a
+
+libxorsat.a: ${LIBXORSAT_OBJS}
+	$(AR)  -rcv $@ $^
+
+libbinxor.a: ${BINXOR_OBJS}
+	$(AR)  -rcv $@ $^
+
+eq-minisat: ${MINISAT_OBJS} libbinxor.a libxorsat.a
+	$(CXX)  ${MINISAT_OBJS} -static -o $@ -L. -lxorsat  -lbinxor -lz

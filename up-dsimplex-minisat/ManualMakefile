@@ -1,0 +1,13 @@
+MINISAT_OBJS=minisat/core/Solver.o minisat/core/Main.o minisat/core/SolverConsistency.o src/Cluster.o src/DSimplex.o src/IdMapper.o src/Matrix.o src/MatrixGroup.o src/util.o
+
+CXXFLAGS += -ggdb -g -O3 -DNDEBUG -Ilibxorsat/include -Iminisat/mtl -Isrc
+
+all: up-dsimplex-minisat
+
+libbinxor.a: ${BINXOR_OBJS}
+	$(AR)  -rcv $@ $^
+
+
+up-dsimplex-minisat: ${MINISAT_OBJS} 
+	$(CXX)  ${MINISAT_OBJS} -static -o $@ -L. -lz
+

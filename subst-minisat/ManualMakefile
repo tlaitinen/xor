@@ -1,0 +1,16 @@
+LIBXORSAT_OBJS=libxorsat/src/Clause.o libxorsat/src/Gauss.o libxorsat/src/SolverImplementation.o libxorsat/src/Variable.o libxorsat/src/Common.o libxorsat/src/ImplicationGraph.o  libxorsat/src/Split.o libxorsat/src/Error.o  libxorsat/src/SolverConsistency.o  libxorsat/src/UndoStack.o
+
+MINISAT_OBJS=minisat/core/Solver.o minisat/core/Main.o minisat/core/SolverConsistency.o
+
+CXXFLAGS += -O3 -DNDEBUG -Ilibxorsat/include -Iminisat/mtl -Ilibxorsat/src
+
+all: xor-minisat
+
+xor-minisat: libxorsat.a 
+
+libxorsat.a: ${LIBXORSAT_OBJS}
+	$(AR) -rcv $@ $^
+
+
+xor-minisat: ${MINISAT_OBJS}
+	$(CXX) ${MINISAT_OBJS} -static -o $@ -L. -lxorsat -lz
