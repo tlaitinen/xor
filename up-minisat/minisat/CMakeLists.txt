@@ -1,5 +1,5 @@
 include_directories(mtl)
 file(GLOB srcs core/*.C)
 add_executable(up-minisat ${srcs})
-target_link_libraries(up-minisat xorsat z binxor)
+target_link_libraries(up-minisat xorsat z binxor rt)
 install(TARGETS up-minisat ${INSTALL_OPTS})
