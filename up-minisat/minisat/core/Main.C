@@ -214,7 +214,7 @@ static void parse_DIMACS(gzFile input_stream, Solver& S) {
 //=================================================================================================
 
 
-void printStats(Solver& solver)
+void printStats(Solver& solver, StopWatch& totalTime)
 {
     double   cpu_time = cpuTime();
     uint64_t mem_used = memUsed();
@@ -233,6 +233,8 @@ void printStats(Solver& solver)
     reportf("UP-xor explained       : %-12lld\n", up.stats.explained);
     reportf("UP-xor deep cuts       : %-12lld\n", up.stats.deepCuts);
     reportf("UP-xor cached exp.     : %-12lld\n", up.stats.cachedExplained);
+    reportf("total time             : %-12lld\n", totalTime.total());
+    reportf("xor time               : %-12lld\n", solver.xorTime.total());
 
     if (up.stats.explained) {
         reportf("UP-xor exp. length     : %.2f\n", (float) up.stats.explanationLits / up.stats.explained);
@@ -260,8 +262,9 @@ void printStats(Solver& solver)
 
 Solver* solver;
 static void SIGINT_handler(int signum) {
+    StopWatch stopWatch;
     reportf("\n"); reportf("*** INTERRUPTED ***\n");
-    printStats(*solver);
+    printStats(*solver, stopWatch);
     reportf("\n"); reportf("*** INTERRUPTED ***\n");
     exit(1); }
 
@@ -310,6 +313,8 @@ const char* hasPrefix(const char* str, const char* prefix)
 
 int main(int argc, char** argv)
 {
+    StopWatch totalTime;
+    totalTime.start();
     Solver      S;
     S.verbosity = 1;
 
@@ -550,7 +555,8 @@ int main(int argc, char** argv)
     }
 
     bool ret = S.solve();
-    printStats(S);
+    totalTime.stop();
+    printStats(S, totalTime);
     reportf("\n");
     printf(ret ? "SATISFIABLE\n" : "UNSATISFIABLE\n");
     if (res != NULL){

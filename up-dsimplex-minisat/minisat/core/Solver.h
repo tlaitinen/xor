@@ -34,6 +34,29 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include <set>
 #include "UPXorModule.hpp"
 
+class StopWatch {
+    struct timespec ts1;
+    long long t;
+public:
+    StopWatch() : t(0) {}
+    void start() {
+        clock_gettime(CLOCK_MONOTONIC_RAW, &ts1);
+    }
+    void stop() {
+        struct timespec ts2;
+        clock_gettime(CLOCK_MONOTONIC_RAW, &ts2);
+        long long secs = ts2.tv_sec - ts1.tv_sec;
+        secs *= 1000000000;
+        t += secs;
+        long long nsecs = ts2.tv_nsec - ts1.tv_nsec;
+        t += nsecs;
+    }
+    long long total() const {
+        return t;
+    }
+};
+
+
 //=================================================================================================
 // Solver -- the main class:
 
@@ -192,7 +215,7 @@ protected:
 public:
     MatrixGroup simplex;
     up::XorModule upModule;
-
+    StopWatch xorTime;
 
 protected:    
 //    ClauseSet   xorImplied; // justifications for implied literals

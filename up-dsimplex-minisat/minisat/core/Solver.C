@@ -243,8 +243,9 @@ bool Solver::addXorClause(vec<Lit>& ps, int mtx)
                 if (!xor_up_xors)
                     upModule.add_equation(lits);
             }
-            else
+            else {
                 simplex.add_equation(mtx, xc, !top);
+            }
         } else {
           simplex.add_equation(xc, !top);
         }
@@ -1770,7 +1771,9 @@ lbool Solver::search(int nof_conflicts, int nof_learnts)
 
             if (numXorClauses && upModule.hasClauses()) {
                 lbool conflict = l_True;
+                xorTime.start();
                 confl = xorUpPropagate(conflict);
+                xorTime.stop();
                 if (confl) {
 
                     conflicts++; conflictC++;
@@ -1788,7 +1791,9 @@ lbool Solver::search(int nof_conflicts, int nof_learnts)
 
             if (xor_propagation == xor_propagation_eager && numXorClauses) {
                 lbool conflict = l_True;
+                xorTime.start();
                 confl = xorEagerPropagate(conflict);
+                xorTime.stop();
                 if (confl) {
 
                     conflicts++; conflictC++; 
@@ -1898,7 +1903,9 @@ bool Solver::solve(const vec<Lit>& assumps)
 
 //    if (xor_internal_vars) 
 //       xorTagInternalVariables();
+    xorTime.start();
     simplex.simplify(xor_split);
+    xorTime.stop();
 
     if (simplex.is_sat() == false) {
         DBG("simplex UNSAT\n");

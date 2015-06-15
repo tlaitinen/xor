@@ -1889,7 +1889,9 @@ lbool Solver::search(int nof_conflicts, int nof_learnts)
             }
             if (xor_up_module && numXorClauses) {
                 lbool conflict = l_True;
+                xorTime.start();
                 confl = xorUpPropagate(conflict);
+                xorTime.stop();
                 if (confl) {
 
                     conflicts++; conflictC++; 
@@ -1990,7 +1992,9 @@ lbool Solver::search(int nof_conflicts, int nof_learnts)
             uncheckedEnqueue(next);
             if (xor_up_module && numXorClauses) {
                 lbool conflict = l_True;
+                xorTime.start();
                 confl = xorUpPropagate(conflict);
+                xorTime.stop();
                 if (confl) {
 
                     conflicts++; conflictC++; 
