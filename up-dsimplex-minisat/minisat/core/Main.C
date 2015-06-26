@@ -251,8 +251,10 @@ void printStats(Solver& solver, StopWatch& totalTime)
     if (up.stats.learnts)
         reportf("UP-xor learnt size     : %.2f\n", (float) up.stats.learntLits / (float) up.stats.learnts);
     reportf("UP-xor explained       : %-12lld\n", up.stats.explained);
-    reportf("total time             : %-12lld\n", totalTime.total());
-    reportf("xor time               : %-12lld\n", solver.xorTime.total());
+    reportf("total time             : %-12g\n", ((double) totalTime.total()) / ((double) 1000000000.0) );
+    reportf("xor time               : %-12g\n", ((double) solver.xorTime.total()) / ((double) 1000000000.0));
+
+
     reportf("learnt / conflict      : %.2f\n", (float) solver.learnts_in_conflicts / solver.conflicts);
 
 
@@ -276,25 +278,25 @@ static void SIGINT_handler(int signum) {
 
 void printUsage(char** argv)
 {
+    Solver s;
     reportf("USAGE: %s [options] <input-file> <result-output-file>\n\n  where input may be either in plain or gzipped DIMACS.\n\n", argv[0]);
     reportf("OPTIONS:\n\n");
     reportf("  -polarity-mode       = {true,false,rnd}      default: false\n");
-    reportf("  -xor-propagation     = {eager,lazy}          default: eager\n");
-    reportf("  -xor-split           = <num> [ 1 - N ]       default: 1\n");
-    reportf("  -xor-lazy-factor     = <num> [ 1 - N ]       default: 2\n");
-    reportf("  -xor-rule-priority   = {external,internal}   default: external\n");
-//    reportf("  -xor-internal-vars   = {on,off}              default: off\n");
-    reportf("  -xor-store-clauses   = {true,false}          default: false\n");
-    reportf("  -xor-exp-length      = <num> [ 3 - N ]       default: 3\n");
-    reportf("  -xor-bump-activity   = {0,1,2}               default: 0\n");
-    reportf("  -xor-even-elim       = {true,false}          default: false\n");
-    reportf("  -xor-up-xors         = {true,false}          default: true\n");
-    reportf("  -xor-up-cache-exp    = {true,false}          default: true\n");
-    reportf("  -xor-split-cycle-components = {true,false}   default: true\n");
-    reportf("  -xor-create-vars     = {true,false}          default: false\n");
-    reportf("  -xor-to-cnf          = {true,false}          default: false\n");
-    reportf("  -xor-deep-cuts       = {true,false}          default: true\n");
-    reportf("  -xor-store-exp       = <num> [ 3 - N ]       default: 0\n");
+    reportf("  -xor-propagation     = {eager,lazy}          default: %s\n", (s.xor_propagation == Solver::xor_propagation_eager) ? "eager" : "lazy" );
+    reportf("  -xor-split           = <num> [ 1 - N ]       default: %d\n", s.xor_split);
+    reportf("  -xor-lazy-factor     = <num> [ 1 - N ]       default: %d\n", s.xor_lazy_factor);
+    reportf("  -xor-rule-priority   = {external,internal}   default: %s\n", (s.xor_rule_priority == Solver::xor_rule_priority_external) ? "external" : "internal");
+    reportf("  -xor-store-clauses   = {true,false}          default: %s\n", s.xor_store_clauses ? "true" : "false");
+    reportf("  -xor-exp-length      = <num> [ 3 - N ]       default: %d\n", s.xor_exp_length);
+    reportf("  -xor-bump-activity   = {0,1,2}               default: %d\n", s.xor_bump_activity);
+    reportf("  -xor-even-elim       = {true,false}          default: %s\n", s.xor_even_elim ? "true" : "false");
+    reportf("  -xor-up-xors         = {true,false}          default: %s\n", (s.xor_up_xors) ? "true" : "false");
+    reportf("  -xor-up-cache-exp    = {true,false}          default: %s\n", s.xor_up_cache_exp ? "true" : "false");
+    reportf("  -xor-split-cycle-components = {true,false}   default: %s\n", s.xor_split_cycle_components ? "true" : "false");
+    reportf("  -xor-create-vars     = {true,false}          default: %s\n", s.xor_create_vars ? "true" : "false");
+    reportf("  -xor-to-cnf          = {true,false}          default: %s\n", s.xor_to_cnf ? "true" : "false");
+    reportf("  -xor-deep-cuts       = {true,false}          default: %s\n", s.xor_deep_cuts ? "true" : "false");
+    reportf("  -xor-store-exp       = <num> [ 3 - N ]       default: %d\n", s.xor_store_exp);
     reportf("  -log-conflicts       = <PATH>                default: off\n");
     reportf("  -decay               = <num> [ 0 - 1 ]\n");
     reportf("  -rnd-freq            = <num> [ 0 - 1 ]\n");

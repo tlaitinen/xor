@@ -233,8 +233,8 @@ void printStats(Solver& solver, StopWatch& totalTime)
     reportf("UP-xor explained       : %-12lld\n", up.stats.explained);
     reportf("UP-xor deep cuts       : %-12lld\n", up.stats.deepCuts);
     reportf("UP-xor cached exp.     : %-12lld\n", up.stats.cachedExplained);
-    reportf("total time             : %-12lld\n", totalTime.total());
-    reportf("xor time               : %-12lld\n", solver.xorTime.total());
+    reportf("total time             : %-12g\n", ((double) totalTime.total()) / ((double) 1000000000.0) );
+    reportf("xor time               : %-12g\n", ((double) solver.xorTime.total()) / ((double) 1000000000.0));
 
     if (up.stats.explained) {
         reportf("UP-xor exp. length     : %.2f\n", (float) up.stats.explanationLits / up.stats.explained);
@@ -274,24 +274,24 @@ static void SIGINT_handler(int signum) {
 
 void printUsage(char** argv)
 {
+    Solver      S;
     reportf("USAGE: %s [options] <input-file> <result-output-file>\n\n  where input may be either in plain or gzipped DIMACS.\n\n", argv[0]);
     reportf("OPTIONS:\n\n");
     reportf("  -polarity-mode       = {true,false,rnd}      default: false\n");
-    reportf("  -xor-propagation     = {eager,lazy}          default: eager\n");
-    reportf("  -xor-lazy-factor     = <num> [ 1 - N ]       default: 2\n");
-    reportf("  -xor-rule-priority   = {external,internal}   default: external\n");
-//    reportf("  -xor-internal-vars   = {on,off}              default: off\n");
-    reportf("  -xor-store-clauses   = {true,false}          default: false\n");
-    reportf("  -xor-exp-length      = <num> [ 3 - N ]       default: 3\n");
-    reportf("  -xor-bump-activity   = {0,1,2}               default: 0\n");
-    reportf("  -xor-even-elim       = {true,false}          default: false\n");
-    reportf("  -xor-create-vars     = {true,false}          default: false\n");
-    reportf("  -xor-to-cnf          = {true,false}          default: true\n");
-    reportf("  -xor-deep-cuts       = <num> [ 0 - N ]       default: 100000\n");
-    reportf("  -xor-1uip-cuts       = {true,false}          default: false\n");
-    reportf("  -xor-store-exp       = <num> [ 3 - N ]       default: 0\n");
-    reportf("  -xor-tree-exp        = {true,false}          default: true\n");
-    reportf("  -xor-learn-all       = {true,false}          default: false\n");
+    reportf("  -xor-propagation     = {eager,lazy}          default: %s\n", (S.xor_propagation == Solver::xor_propagation_eager) ? "eager" : "lazy");
+    reportf("  -xor-lazy-factor     = <num> [ 1 - N ]       default: %d\n", S.xor_lazy_factor);
+    reportf("  -xor-rule-priority   = {external,internal}   default: %s\n", (S.xor_rule_priority == Solver::xor_rule_priority_internal) ? "internal" : "external" );
+    reportf("  -xor-store-clauses   = {true,false}          default: %s\n", (S.xor_store_clauses) ? "true" : "false");
+    reportf("  -xor-exp-length      = <num> [ 3 - N ]       default: %d\n", S.xor_exp_length);
+    reportf("  -xor-bump-activity   = {0,1,2}               default: %d\n", S.xor_bump_activity);
+    reportf("  -xor-even-elim       = {true,false}          default: %s\n", S.xor_even_elim ? "true" : "false");
+    reportf("  -xor-create-vars     = {true,false}          default: %s\n", S.xor_create_vars ? "true" : "false");
+    reportf("  -xor-to-cnf          = {true,false}          default: %s\n", S.xor_to_cnf ? "true" : "false");
+    reportf("  -xor-deep-cuts       = {true,false}]         default: %s\n", S.xor_deep_cuts ? "true" : "false");
+    reportf("  -xor-1uip-cuts       = {true,false}          default: %s\n", S.xor_1uip_cuts ? "true" : "false");
+    reportf("  -xor-store-exp       = <num> [ 3 - N ]       default: %d\n", S.xor_store_exp);
+    reportf("  -xor-tree-exp        = {true,false}          default: %s\n", S.xor_tree_exp ? "true" : "false");
+    reportf("  -xor-learn-all       = {true,false}          default: %s\n", S.xor_learn_all ? "true" : "false");
     reportf("  -log-conflicts       = <PATH>                default: off\n");
     reportf("  -decay               = <num> [ 0 - 1 ]\n");
     reportf("  -rnd-freq            = <num> [ 0 - 1 ]\n");
